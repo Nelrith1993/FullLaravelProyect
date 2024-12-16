@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SubcategoryController;  // Asegúrate de importar tu controlador
+use App\Http\Controllers\SubcategoryController; 
 
 // Ruta protegida para obtener el usuario autenticado (si usas Sanctum para autenticación)
 Route::get('/user', function (Request $request) {
