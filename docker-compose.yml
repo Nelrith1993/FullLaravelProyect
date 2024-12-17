@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # Backend Laravel
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: laravel-app
+    container_name: laravel-app
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    networks:
+      - app-network
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=auramod
+      - DB_USERNAME=root
+      - DB_PASSWORD=abc123.
+      - APP_KEY=${APP_KEY}
+
+  # Base de datos MySQL
+  db:
+    image: mysql:5.7
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: abc123.
+      MYSQL_DATABASE: auramod
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_HOST=db
+    networks:
+      - app-network
+
+  # Frontend Vue 3 + Inertia.js
+  frontend:
+    build:
+      context: .
+      dockerfile: ./resources/Dockerfile 
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./resources:/var/www/resources
+    depends_on:
+      - app 
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
